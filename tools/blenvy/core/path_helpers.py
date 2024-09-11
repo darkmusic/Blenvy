@@ -9,3 +9,6 @@ def absolute_path_from_blend_file(path):
 
     # absolute path
     return os.path.abspath(os.path.join(blend_file_folder_path, path))
+
+def sanitize_os_path(path):
+    return path.replace("\\", "/")

@@ -2,7 +2,7 @@
 
 import bpy
 import os
-
+from ....core.path_helpers import sanitize_os_path
 
 # TODO: move to helpers
 
@@ -22,7 +22,7 @@ def add_animation_info_to_objects(animations_per, settings):
     for object in materials_per_object.keys():
         material_infos = []
         for material in materials_per_object[object]:
-            materials_exported_path = posixpath.join(materials_path, f"{material.name}{export_gltf_extension}")
+            materials_exported_path = sanitize_os_path(os.path.join(materials_path, f"{material.name}{export_gltf_extension}"))
             material_info = f'(name: "{material.name}", path: "{materials_exported_path}")' 
             material_infos.append(material_info)
         # problem with using actual components: you NEED the type registry/component infos, so if there is none , or it is not loaded yet, it does not work

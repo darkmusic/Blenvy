@@ -20,6 +20,7 @@ def write_ron_assets_file(name, assets_hierarchy, internal_only=False, output_pa
     for asset in assets_hierarchy:
         if asset["internal"] or not internal_only:
             formated_asset = f'\n    "{asset["name"]}": File ( path: "{asset["path"]}" ),'
+            formated_asset = formated_asset.replace("\\", "/")
             formated_assets.append(formated_asset)
 
     with open(f"{output_path_full}/{name}.assets.ron", "w") as assets_file:

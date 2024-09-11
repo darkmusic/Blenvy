@@ -3,7 +3,7 @@ import os
 import json
 import bpy
 from pathlib import Path
-import posixpath
+from ..core.path_helpers import sanitize_os_path
 
 def find_blueprints_not_on_disk(blueprints, folder_path, extension):
     not_found_blueprints = []
@@ -16,13 +16,13 @@ def find_blueprints_not_on_disk(blueprints, folder_path, extension):
     return not_found_blueprints
 
 def check_if_blueprint_on_disk(scene_name, folder_path, extension):
-    gltf_output_path = os.path.join(folder_path, scene_name + extension)
+    gltf_output_path = sanitize_os_path(os.path.join(folder_path, scene_name + extension))
     found = os.path.exists(gltf_output_path) and os.path.isfile(gltf_output_path)
     return found
 
 def inject_export_path_into_internal_blueprints(internal_blueprints, blueprints_path, gltf_extension, settings):
     for blueprint in internal_blueprints:
-        blueprint_exported_path = posixpath.join(blueprints_path, f"{blueprint.name}{gltf_extension}")
+        blueprint_exported_path = sanitize_os_path(os.path.join(blueprints_path, f"{blueprint.name}{gltf_extension}"))
         # print("injecting blueprint path", blueprint_exported_path, "for", blueprint.name)
         blueprint.collection["export_path"] = blueprint_exported_path
         """if split_out_materials:

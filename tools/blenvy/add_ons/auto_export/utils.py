@@ -1,10 +1,10 @@
-import posixpath
 import bpy
 from pathlib import Path
 from ...assets.assets_scan import get_blueprint_asset_tree, get_level_scene_assets_tree2
 from ..bevy_components.utils import is_component_valid_and_enabled
 from .constants import custom_properties_to_filter_out
 from ...assets.assets_scan import get_level_scene_assets_tree2
+from ...core.path_helpers import sanitize_os_path
 
 def remove_unwanted_custom_properties(object):
     to_remove = []
@@ -53,9 +53,10 @@ def write_level_metadata_file(scene, blueprints_data, settings):
     for asset in all_assets_raw:
         #if asset["internal"] :
         formated_asset = f'\n    ("{asset["name"]}", File ( path: "{asset["path"]}" )),'
+        formated_asset = formated_asset.replace("\\", "/")
         formated_assets.append(formated_asset)
     
-    metadata_file_path_full = os.path.join(levels_path_full, scene.name+".meta.ron")
+    metadata_file_path_full = sanitize_os_path(os.path.join(levels_path_full, scene.name+".meta.ron"))
     os.makedirs(os.path.dirname(metadata_file_path_full), exist_ok=True)
 
     with open(metadata_file_path_full, "w") as assets_file:
@@ -73,10 +74,11 @@ def write_blueprint_metadata_file(blueprint, blueprints_data, settings):
     for asset in all_assets_raw:
         #if asset["internal"] :
         formated_asset = f'\n    ("{asset["name"]}", File ( path: "{asset["path"]}" )),'
+        formated_asset = formated_asset.replace("\\", "/")
         formated_assets.append(formated_asset)
 
 
-    metadata_file_path_full = os.path.join(blueprints_path_full, blueprint.name+".meta.ron")
+    metadata_file_path_full = sanitize_os_path(os.path.join(blueprints_path_full, blueprint.name+".meta.ron"))
     os.makedirs(os.path.dirname(metadata_file_path_full), exist_ok=True)
 
     with open(metadata_file_path_full, "w") as assets_file:

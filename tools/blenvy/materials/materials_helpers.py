@@ -1,12 +1,12 @@
 import os
-import posixpath
 from ..core.helpers_collections import (traverse_tree)
+from ..core.path_helpers import (sanitize_os_path)
 from ..add_ons.bevy_components.components.metadata import apply_propertyGroup_values_to_item_customProperties_for_component, upsert_bevy_component, get_bevy_component_value_by_long_name
 
 def find_materials_not_on_disk(materials, materials_path_full, extension):
     not_found_materials = []
     for material in materials:
-        gltf_output_path = os.path.join(materials_path_full, material.name + extension)
+        gltf_output_path = sanitize_os_path(os.path.join(materials_path_full, material.name + extension))
         # print("gltf_output_path", gltf_output_path)
         found = os.path.exists(gltf_output_path) and os.path.isfile(gltf_output_path)
         if not found:
@@ -14,8 +14,8 @@ def find_materials_not_on_disk(materials, materials_path_full, extension):
     return not_found_materials
 
 def check_if_material_on_disk(scene_name, folder_path, extension):
-    gltf_output_path = os.path.join(folder_path, scene_name + extension)
-    found = os.path.exists(gltf_output_path) and os.path.isfile(gltf_output_path)
+    gltf_output_path = sanitize_os_path(os.path.join(folder_path, scene_name + extension))
+    found = sanitize_os_path(os.path.exists(gltf_output_path) and os.path.isfile(gltf_output_path))
     return found
 
 
@@ -87,7 +87,7 @@ def add_material_info_to_objects(materials_per_object, settings):
     for object in materials_per_object.keys():
         material_infos = []
         for material in materials_per_object[object]:
-            materials_exported_path = posixpath.join(materials_path, f"{material.name}{export_gltf_extension}")
+            materials_exported_path = sanitize_os_path(os.path.join(materials_path, f"{material.name}{export_gltf_extension}"))
             material_info = f'(name: "{material.name}", path: "{materials_exported_path}")' 
             material_infos.append(material_info)
         # problem with using actual components: you NEED the type registry/component infos, so if there is none , or it is not loaded yet, it does not work
